@@ -1,2 +1,2 @@
 # DX-Lessons
-DirectX11 lessons (на русском).
+DirectX11 lessons (с комментариями на русском).
