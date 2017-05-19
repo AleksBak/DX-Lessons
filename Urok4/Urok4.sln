@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Urok4", "Urok4\Urok4.vcxproj", "{59737C68-4643-4B16-A59E-A43C5ABE20DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{59737C68-4643-4B16-A59E-A43C5ABE20DB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{59737C68-4643-4B16-A59E-A43C5ABE20DB}.Debug|Win32.Build.0 = Debug|Win32
+		{59737C68-4643-4B16-A59E-A43C5ABE20DB}.Release|Win32.ActiveCfg = Release|Win32
+		{59737C68-4643-4B16-A59E-A43C5ABE20DB}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
