@@ -1,12 +1,23 @@
 //--------------------------------------------------------------------------------------
 // Урок 6. Наложение текстур. Основан на примере из DX SDK (c) Microsoft Corp.
 //--------------------------------------------------------------------------------------
+
+// некоторые подключаемые хедеры изменились
 #include <windows.h>
-#include <d3d11.h>
-#include <d3dx11.h>
+#include <d3d11.h>				// #include <d3d11.h> (#include <wrl/client.h> для COM)
+#include <DirectXMath.h>		// DirectX::XMFLOAT3, DirectX::XMMATRIX и пр.
 #include <d3dcompiler.h>
-#include <xnamath.h>
 #include "resource.h"
+
+#include "DDSTextureLoader.h"
+
+// здесь подключил библиотеки (не в настройках проекта)
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "d3dcompiler.lib")
+#pragma comment(lib, "DirectXTK.lib")
+
+// это нужно также (из DirectXMath.h)
+using namespace DirectX;
 
 #define MX_SETWORLD 0x101
 
@@ -209,11 +220,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 HRESULT CompileShaderFromFile(WCHAR* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut)
 {
 	HRESULT hr = S_OK;
-
 	DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
 	ID3DBlob* pErrorBlob;
-	hr = D3DX11CompileFromFile(szFileName, NULL, NULL, szEntryPoint, szShaderModel,
-							   dwShaderFlags, 0, NULL, ppBlobOut, &pErrorBlob, NULL);
+	hr = D3DCompileFromFile(szFileName, NULL, NULL, szEntryPoint, szShaderModel, dwShaderFlags, 0,
+							ppBlobOut, &pErrorBlob);
 	if (FAILED(hr))
 	{
 		if (pErrorBlob != NULL)
@@ -513,7 +523,8 @@ HRESULT InitGeometry()
 	if (FAILED(hr)) return hr;
 
 	// Загрузка текстуры из файла
-	hr = D3DX11CreateShaderResourceViewFromFile(g_pd3dDevice, L"seafloor.dds", NULL, NULL, &g_pTextureRV, NULL);
+	//hr = CreateDDSTextureFromFile(g_pd3dDevice, L"seafloor.dds", nullptr, &g_pTextureRV);
+	hr = CreateDDSTextureFromFile(g_pd3dDevice, L"Afterburner_Eng_T.dds", nullptr, &g_pTextureRV);
 	if (FAILED(hr)) return hr;
 
 	// Создание сэмпла (описания) текстуры

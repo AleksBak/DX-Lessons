@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Urok1", "Urok1\Urok1\Urok1.vcxproj", "{A9707465-FFC6-45D3-B221-F4B46DB4DC10}"
 EndProject
@@ -20,6 +20,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Urok2_01", "Urok2_01\Urok2\Urok2_01.vcxproj", "{1DDFA245-5035-48B3-8A7B-CEF1B2FE359D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Urok4_SDK", "Urok4_SDK\Urok4_SDK.vcxproj", "{0DA24953-510C-400C-8072-C0D3297CC5B4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Urok6_SDK", "Urok6_SDK\Urok6\Urok6_SDK.vcxproj", "{9D8A0683-BA2A-478D-AFB1-90C0184C5398}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTK_Desktop_2013", "DirectXTK\DirectXTK_Desktop_2013.vcxproj", "{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +103,20 @@ Global
 		{0DA24953-510C-400C-8072-C0D3297CC5B4}.Release|Win32.Build.0 = Release|Win32
 		{0DA24953-510C-400C-8072-C0D3297CC5B4}.Release|x64.ActiveCfg = Release|x64
 		{0DA24953-510C-400C-8072-C0D3297CC5B4}.Release|x64.Build.0 = Release|x64
+		{9D8A0683-BA2A-478D-AFB1-90C0184C5398}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9D8A0683-BA2A-478D-AFB1-90C0184C5398}.Debug|Win32.Build.0 = Debug|Win32
+		{9D8A0683-BA2A-478D-AFB1-90C0184C5398}.Debug|x64.ActiveCfg = Debug|Win32
+		{9D8A0683-BA2A-478D-AFB1-90C0184C5398}.Release|Win32.ActiveCfg = Release|Win32
+		{9D8A0683-BA2A-478D-AFB1-90C0184C5398}.Release|Win32.Build.0 = Release|Win32
+		{9D8A0683-BA2A-478D-AFB1-90C0184C5398}.Release|x64.ActiveCfg = Release|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Debug|Win32.Build.0 = Debug|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Debug|x64.ActiveCfg = Debug|x64
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Debug|x64.Build.0 = Debug|x64
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|Win32.ActiveCfg = Release|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|Win32.Build.0 = Release|Win32
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.ActiveCfg = Release|x64
+		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

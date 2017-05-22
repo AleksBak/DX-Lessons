@@ -522,6 +522,8 @@ void Render()
 	// Нарисовать пирамидку
 	g_pImmediateContext->VSSetShader(g_pVertexShader, NULL, 0);
 	g_pImmediateContext->PSSetShader(g_pPixelShader, NULL, 0);
+	// Здесь первый параметр, равный нулю, – это как раз идентификатор (или слот) константного
+	// буфера, указанный в файле шейдера – b0 :
 	g_pImmediateContext->VSSetConstantBuffers(0, 1, &g_pConstantBuffer);
 	// Нарисовать 18 индексированных вершин
 	g_pImmediateContext->DrawIndexed(18, 0, 0);
