@@ -127,6 +127,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		else
 		{
 			Render(); // Рисуем сцену
+			Sleep(40);
 		}
 	}
 

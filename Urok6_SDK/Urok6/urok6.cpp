@@ -139,7 +139,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLi
 		}
 		else
 		{
-			Render(); // Рисуем сцену
+			// Рисуем сцену
+			Render();
+			Sleep(10);
 		}
 	}
 	// Освобождаем объекты DirectX
@@ -166,18 +168,19 @@ HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow)
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = NULL;
-	wcex.lpszClassName = L"Urok6WindowClass";
+	wcex.lpszClassName = "Urok6WindowClass";
 	wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCTSTR)IDI_ICON1);
 	if (!RegisterClassEx(&wcex))
 		return E_FAIL;
 
 	// Создание окна
 	g_hInst = hInstance;
-	RECT rc = { 0, 0, 400, 300 };
+	//RECT rc = { 0, 0, 400, 300 };
+	RECT rc = { 0, 0, 1920, 1080 };
 	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-	g_hWnd = CreateWindow(L"Urok6WindowClass", L"Урок 6. Наложение текстур", WS_OVERLAPPEDWINDOW,
-						  CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance,
-						  NULL);
+	g_hWnd = CreateWindow("Urok6WindowClass", "Урок 6. Наложение текстур", WS_OVERLAPPEDWINDOW,
+						  CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL,
+						  NULL, hInstance, NULL);
 	if (!g_hWnd)
 		return E_FAIL;
 
@@ -357,6 +360,71 @@ HRESULT InitDevice()
 }
 
 
+void CreateSampleModel(ID3D11Device* Device, ID3D11DeviceContext* Context)
+{
+	// Создание буфера вершин
+#define V(n) (n&1?+1.0f:-1.0f), (n&2?-1.0f:+1.0f), (n&4?+1.0f:-1.0f) 
+
+	float vertices[] =
+	{
+		V(0), V(3), V(2),
+		V(6), V(3), V(7),
+		V(4), V(2), V(6),
+		V(1), V(5), V(3),
+		V(4), V(1), V(0),
+		V(5), V(4), V(7)
+	};
+	D3D11_BUFFER_DESC bd =
+	{
+		sizeof(vertices),
+		D3D11_USAGE_DEFAULT,
+		D3D11_BIND_VERTEX_BUFFER
+	};
+	D3D11_SUBRESOURCE_DATA initData = { vertices };
+
+	ID3D11Buffer* VertexBuffer;
+	Device->CreateBuffer(&bd, &initData, &VertexBuffer);
+
+	UINT stride = sizeof(float) * 3U;
+	UINT offset = 0;
+	Context->IASetVertexBuffers(0, 1, &VertexBuffer, &stride, &offset);
+
+	// Создание вершинного шейдера
+	char* vShader = "float4x4 m; \
+	void VS(in float4 p1 : POSITION, out float4 p2 : SV_Position) \
+	{ \
+		p2 = mul(m, p1); \
+	}";
+
+	ID3D10Blob* pBlob;
+	D3DCompile(vShader, strlen(vShader), "VS", 0, 0, "VS", "vs_4_0", 0, 0, &pBlob, 0);
+
+	ID3D11VertexShader * VertexShader;
+	Device->CreateVertexShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), 0, &VertexShader);
+
+
+	D3D11_INPUT_ELEMENT_DESC elements[] = { { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT }, };
+
+	ID3D11InputLayout* InputLayout;
+	Device->CreateInputLayout(elements, 1, pBlob->GetBufferPointer(), pBlob->GetBufferSize(), &InputLayout);
+
+
+	char* pShader = "\
+	void PS(out float4 colorOut : SV_Target) \
+	{ \
+		colorOut = float4(0.1,0.5,0.1,1); \
+	}";
+
+	D3DCompile(pShader, strlen(pShader), "PS", 0, 0, "PS", "ps_4_0", 0, 0, &pBlob, 0);
+
+	ID3D11PixelShader* PixelShader;
+	Device->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), 0, &PixelShader);
+
+	Context->IASetInputLayout(InputLayout);
+	Context->VSSetShader(VertexShader, 0, 0);
+	Context->PSSetShader(PixelShader, 0, 0);
+}
+
 //--------------------------------------------------------------------------------------
 // Создание буфера вершин, шейдеров (shaders) и описания формата вершин (input layout)
 //--------------------------------------------------------------------------------------
@@ -364,22 +432,65 @@ HRESULT InitGeometry()
 {
 	HRESULT hr = S_OK;
 
-	// Компиляция вершинного шейдера из файла
-	ID3DBlob* pVSBlob = NULL; // Вспомогательный объект - просто место в оперативной памяти
+	char* vShader = " \
+	Texture2D txDiffuse : register( t0 );		// Буфер текстуры \
+	SamplerState samLinear : register(s0);		// Буфер образца \
+	\
+	cbuffer ConstantBuffer : register(b0) \
+	{ \
+		matrix World;			// Матрица мира \
+		matrix View;			// Матрица вида \
+		matrix Projection;		// Матрица проекции \
+		float4 vLightDir[2];	// Направление источника света \
+		float4 vLightColor[2];	// Цвет источника света \
+		float4 vOutputColor;	// Активный цвет \
+	} \
+	\
+	struct VS_INPUT					// Входящие данные вершинного шейдера \
+	{ \
+		float4 Pos : POSITION;		// Позиция по X, Y, Z \
+		float2 Tex : TEXCOORD0;		// Координаты текстуры по tu, tv \
+		float3 Norm : NORMAL;		// Нормаль по X, Y, Z \
+	}; \
+	\
+	struct PS_INPUT					// Входящие данные пиксельного шейдера \
+	{ \
+		float4 Pos : SV_POSITION;	// Позиция пикселя в проекции (экранная) \
+		float2 Tex : TEXCOORD0;		// Координаты текстуры по tu, tv \
+		float3 Norm : TEXCOORD1;	// Относительная нормаль пикселя по tu, tv \
+	}; \
+	\
+	PS_INPUT VS( VS_INPUT input ) \
+	{ \
+		PS_INPUT output = (PS_INPUT)0; \
+		output.Pos = mul(input.Pos, World); \
+		output.Pos = mul(output.Pos, View); \
+		output.Pos = mul(output.Pos, Projection); \
+		output.Norm = mul(input.Norm, World); \
+		output.Tex = input.Tex; \
+	\
+		return output; \
+	}";
+
+	// Компиляция вершинного шейдера
+	ID3DBlob* pVSBlob = NULL;		// Вспомогательный объект - просто место в оперативной памяти
 	hr = CompileShaderFromFile(L"urok6.fx", "VS", "vs_4_0", &pVSBlob);
 	if (FAILED(hr))
 	{
-		MessageBox(NULL, L"Невозможно скомпилировать файл FX. Пожалуйста, запустите данную программу из папки, содержащей файл FX.", L"Ошибка", MB_OK);
+		MessageBox(NULL, "Невозможно скомпилировать файл FX. Пожалуйста, запустите данную программу из папки, содержащей файл FX.", "Ошибка", MB_OK);
 		return hr;
 	}
+	//D3DCompile(vShader, strlen(vShader), "VS", 0, 0, "VS", "vs_4_0", 0, 0, &pVSBlob, 0);
 
 	// Создание вершинного шейдера
-	hr = g_pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), NULL, &g_pVertexShader);
+	hr = g_pd3dDevice->CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(),
+										  NULL, &g_pVertexShader);
 	if (FAILED(hr))
 	{
 		pVSBlob->Release();
 		return hr;
 	}
+
 
 	// Определение шаблона вершин
 	D3D11_INPUT_ELEMENT_DESC layout[] =
@@ -399,14 +510,62 @@ HRESULT InitGeometry()
 	// Подключение шаблона вершин
 	g_pImmediateContext->IASetInputLayout(g_pVertexLayout);
 
-	// Компиляция пиксельного шейдера для основного большого куба из файла
+
+	char* pShader = " \
+	Texture2D txDiffuse : register( t0 );		// Буфер текстуры \
+	SamplerState samLinear : register(s0);		// Буфер образца \
+	\
+	cbuffer ConstantBuffer : register(b0) \
+	{ \
+		matrix World;			// Матрица мира \
+		matrix View;			// Матрица вида \
+		matrix Projection;		// Матрица проекции \
+		float4 vLightDir[2];	// Направление источника света \
+		float4 vLightColor[2];	// Цвет источника света \
+		float4 vOutputColor;	// Активный цвет \
+	} \
+	\
+	struct PS_INPUT					// Входящие данные пиксельного шейдера \
+	{ \
+		float4 Pos : SV_POSITION;	// Позиция пикселя в проекции (экранная) \
+		float2 Tex : TEXCOORD0;		// Координаты текстуры по tu, tv \
+		float3 Norm : TEXCOORD1;	// Относительная нормаль пикселя по tu, tv \
+	}; \
+	\
+	//-------------------------------------------------------------------------------------- \
+	// Пиксельный шейдер для куба \
+	float4 PS(PS_INPUT input) : SV_Target \
+	{ \
+		float4 finalColor = 0; \
+		\
+		// складываем освещенность пикселя от всех источников света \
+		for (int i = 0; i < 2; i++) \
+		{ \
+			finalColor += saturate(dot((float3)vLightDir[i], input.Norm) * vLightColor[i]); \
+		} \
+		finalColor.a = 1; \
+		finalColor *= txDiffuse.Sample(samLinear, input.Tex); \
+		\
+		return finalColor; \
+	} \
+	\
+	//-------------------------------------------------------------------------------------- \
+	// Пиксельный шейдер для источников света \
+	float4 PSSolid(PS_INPUT input) : SV_Target \
+	{ \
+		return vOutputColor; \
+	} \
+	";
+
+	// Компиляция пиксельного шейдера для основного большого куба
 	ID3DBlob* pPSBlob = NULL;
 	hr = CompileShaderFromFile(L"urok6.fx", "PS", "ps_4_0", &pPSBlob);
 	if (FAILED(hr))
 	{
-		MessageBox(NULL, L"Невозможно скомпилировать файл FX. Пожалуйста, запустите данную программу из папки, содержащей файл FX.", L"Ошибка", MB_OK);
+		MessageBox(NULL, "Невозможно скомпилировать файл FX. Пожалуйста, запустите данную программу из папки, содержащей файл FX.", "Ошибка", MB_OK);
 		return hr;
 	}
+	//D3DCompile(pShader, strlen(pShader), "PS", 0, 0, "PS", "ps_4_0", 0, 0, &pPSBlob, 0);
 
 	// Создание пиксельного шейдера
 	hr = g_pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &g_pPixelShader);
@@ -418,7 +577,7 @@ HRESULT InitGeometry()
 	hr = CompileShaderFromFile(L"urok6.fx", "PSSolid", "ps_4_0", &pPSBlob);
 	if (FAILED(hr))
 	{
-		MessageBox(NULL, L"Невозможно скомпилировать файл FX. Пожалуйста, запустите данную программу из папки, содержащей файл FX.", L"Ошибка", MB_OK);
+		MessageBox(NULL, "Невозможно скомпилировать файл FX. Пожалуйста, запустите данную программу из папки, содержащей файл FX.", "Ошибка", MB_OK);
 		return hr;
 	}
 
@@ -426,6 +585,7 @@ HRESULT InitGeometry()
 	hr = g_pd3dDevice->CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &g_pPixelShaderSolid);
 	pPSBlob->Release();
 	if (FAILED(hr)) return hr;
+
 
 	// Создание буфера вершин (по 4 точки на каждую сторону куба, всего 24 вершины)
 	SimpleVertex vertices[] =

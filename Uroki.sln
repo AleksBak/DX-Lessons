@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Urok1", "Urok1\Urok1\Urok1.vcxproj", "{A9707465-FFC6-45D3-B221-F4B46DB4DC10}"
 EndProject
@@ -17,13 +17,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Urok6", "Urok6\Urok6\Urok6.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Urok7", "Urok7\Urok7\Urok7.vcxproj", "{541C6775-878B-4CA9-90AD-76BCA96E8FE2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Urok2_01", "Urok2_01\Urok2\Urok2_01.vcxproj", "{1DDFA245-5035-48B3-8A7B-CEF1B2FE359D}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Urok4_SDK", "Urok4_SDK\Urok4_SDK.vcxproj", "{0DA24953-510C-400C-8072-C0D3297CC5B4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Urok6_SDK", "Urok6_SDK\Urok6\Urok6_SDK.vcxproj", "{9D8A0683-BA2A-478D-AFB1-90C0184C5398}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTK_Desktop_2013", "DirectXTK\DirectXTK_Desktop_2013.vcxproj", "{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CopyResFixed", "CopyResFixed\CopyResFixed.vcxproj", "{1A8603AF-A554-4C84-B6AC-89A437FD9ADB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,14 +87,6 @@ Global
 		{541C6775-878B-4CA9-90AD-76BCA96E8FE2}.Release|Win32.Build.0 = Release|Win32
 		{541C6775-878B-4CA9-90AD-76BCA96E8FE2}.Release|Win32.Deploy.0 = Release|Win32
 		{541C6775-878B-4CA9-90AD-76BCA96E8FE2}.Release|x64.ActiveCfg = Release|Win32
-		{1DDFA245-5035-48B3-8A7B-CEF1B2FE359D}.Debug|Win32.ActiveCfg = Debug|Win32
-		{1DDFA245-5035-48B3-8A7B-CEF1B2FE359D}.Debug|Win32.Build.0 = Debug|Win32
-		{1DDFA245-5035-48B3-8A7B-CEF1B2FE359D}.Debug|x64.ActiveCfg = Debug|x64
-		{1DDFA245-5035-48B3-8A7B-CEF1B2FE359D}.Debug|x64.Build.0 = Debug|x64
-		{1DDFA245-5035-48B3-8A7B-CEF1B2FE359D}.Release|Win32.ActiveCfg = Release|Win32
-		{1DDFA245-5035-48B3-8A7B-CEF1B2FE359D}.Release|Win32.Build.0 = Release|Win32
-		{1DDFA245-5035-48B3-8A7B-CEF1B2FE359D}.Release|x64.ActiveCfg = Release|x64
-		{1DDFA245-5035-48B3-8A7B-CEF1B2FE359D}.Release|x64.Build.0 = Release|x64
 		{0DA24953-510C-400C-8072-C0D3297CC5B4}.Debug|Win32.ActiveCfg = Debug|Win32
 		{0DA24953-510C-400C-8072-C0D3297CC5B4}.Debug|Win32.Build.0 = Debug|Win32
 		{0DA24953-510C-400C-8072-C0D3297CC5B4}.Debug|x64.ActiveCfg = Debug|x64
@@ -117,6 +109,12 @@ Global
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|Win32.Build.0 = Release|Win32
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.ActiveCfg = Release|x64
 		{E0B52AE7-E160-4D32-BF3F-910B785E5A8E}.Release|x64.Build.0 = Release|x64
+		{1A8603AF-A554-4C84-B6AC-89A437FD9ADB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1A8603AF-A554-4C84-B6AC-89A437FD9ADB}.Debug|Win32.Build.0 = Debug|Win32
+		{1A8603AF-A554-4C84-B6AC-89A437FD9ADB}.Debug|x64.ActiveCfg = Debug|Win32
+		{1A8603AF-A554-4C84-B6AC-89A437FD9ADB}.Release|Win32.ActiveCfg = Release|Win32
+		{1A8603AF-A554-4C84-B6AC-89A437FD9ADB}.Release|Win32.Build.0 = Release|Win32
+		{1A8603AF-A554-4C84-B6AC-89A437FD9ADB}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
